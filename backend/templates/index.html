@@ -1,0 +1,742 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Reviewly - AI-powered code review and bug prediction.">
+    <title>Reviewly | Smart AI Code Review</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #080d1b;
+            color: #f5f7ff;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(8, 13, 27, .96);
+            border-bottom: 1px solid #26304a;
+        }
+
+        nav {
+            min-height: 75px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 27px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .logo span {
+            color: #6c7cff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #b5bfd6;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            color: #55ddce;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #626ff5;
+            color: white;
+            border: none;
+            padding: 13px 23px;
+            border-radius: 9px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .btn:hover {
+            background: #7c87ff;
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            padding: 105px 0;
+            background:
+                radial-gradient(circle at 85% 25%, #222c65 0, transparent 35%),
+                #080d1b;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 55px;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 8px 15px;
+            border: 1px solid #424c91;
+            border-radius: 30px;
+            color: #aeb8ff;
+            font-size: 13px;
+            margin-bottom: 22px;
+        }
+
+        h1 {
+            font-size: clamp(40px, 5vw, 65px);
+            line-height: 1.12;
+            margin-bottom: 22px;
+        }
+
+        .gradient {
+            background: linear-gradient(90deg, #9ca8ff, #55ddce);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            color: #a6aec5;
+            font-size: 17px;
+            margin-bottom: 28px;
+        }
+
+        .hero-visual {
+            background: #111a30;
+            padding: 28px;
+            border: 1px solid #303b60;
+            border-radius: 18px;
+            box-shadow: 0 25px 70px #0007;
+        }
+
+        .code-top {
+            color: #7f91b8;
+            border-bottom: 1px solid #303b60;
+            padding-bottom: 15px;
+            margin-bottom: 18px;
+        }
+
+        .code {
+            font-family: monospace;
+            line-height: 2;
+            color: #9bd9d0;
+            font-size: 14px;
+        }
+
+        .code .purple {
+            color: #c6a7ff;
+        }
+
+        .code .orange {
+            color: #ffbd85;
+        }
+
+        section {
+            padding: 85px 0;
+            scroll-margin-top: 75px;
+        }
+
+        .section-title {
+            text-align: center;
+            max-width: 680px;
+            margin: 0 auto 45px;
+        }
+
+        .section-title h2 {
+            font-size: 37px;
+            margin-bottom: 13px;
+        }
+
+        .section-title p {
+            color: #a6aec5;
+        }
+
+        .features {
+            background: #0c1427;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .feature-card {
+            background: #121d35;
+            border: 1px solid #293653;
+            border-radius: 14px;
+            padding: 25px;
+            transition: .2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            border-color: #6877ff;
+        }
+
+        .feature-icon {
+            font-size: 30px;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            color: #a6aec5;
+            font-size: 14px;
+        }
+
+        .review-section {
+            background: #0b1222;
+        }
+
+        .review-panel {
+            max-width: 720px;
+            margin: auto;
+            background: #121d35;
+            padding: 35px;
+            border: 1px solid #344365;
+            border-radius: 18px;
+            box-shadow: 0 20px 60px #0005;
+        }
+
+        .review-panel label {
+            display: block;
+            margin: 20px 0 10px;
+            font-weight: bold;
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: #091326;
+            color: #cbd3e8;
+            border: 1px dashed #596a9b;
+            border-radius: 10px;
+        }
+
+        .review-panel button {
+            width: 100%;
+            margin-top: 20px;
+            font-size: 15px;
+        }
+
+        #reviewResults {
+            margin-top: 25px;
+            overflow-wrap: anywhere;
+        }
+
+        .result-card {
+            background: #0b1428;
+            border: 1px solid #344365;
+            border-radius: 10px;
+            padding: 17px;
+            margin-top: 12px;
+        }
+
+        .result-card h3 {
+            color: #72dfcf;
+            margin-bottom: 8px;
+        }
+
+        .result-card p {
+            color: #c2cce2;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .status {
+            color: #72dfcf;
+            margin-bottom: 12px;
+        }
+
+        .error {
+            color: #ff9da8;
+        }
+
+        .pricing {
+            background: #0c1427;
+        }
+
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .price-card {
+            padding: 30px;
+            background: #121d35;
+            border: 1px solid #303c5a;
+            border-radius: 15px;
+        }
+
+        .price-card h3 {
+            font-size: 22px;
+        }
+
+        .price {
+            font-size: 35px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #aab3ff;
+        }
+
+        .price-card p,
+        .price-card li {
+            color: #a6aec5;
+            font-size: 14px;
+        }
+
+        .price-card ul {
+            list-style: none;
+            margin: 20px 0;
+        }
+
+        .price-card li {
+            margin: 12px 0;
+        }
+
+        .price-card li::before {
+            content: "✓ ";
+            color: #55ddce;
+        }
+
+        .cta {
+            text-align: center;
+            background: linear-gradient(120deg, #202b67, #124b58);
+            border-radius: 20px;
+            padding: 65px 25px;
+        }
+
+        .cta h2 {
+            font-size: 35px;
+            margin-bottom: 15px;
+        }
+
+        .cta p {
+            color: #d0d7f4;
+            margin-bottom: 25px;
+        }
+
+        footer {
+            padding: 30px 0;
+            text-align: center;
+            color: #8792aa;
+            border-top: 1px solid #26304a;
+            font-size: 13px;
+        }
+
+        @media(max-width: 850px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+            }
+
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .price-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width: 600px) {
+            nav {
+                flex-wrap: wrap;
+                padding: 15px 0;
+            }
+
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .nav-cta {
+                display: none;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 65px 0;
+            }
+
+            section {
+                padding: 60px 0;
+            }
+
+            .review-panel {
+                padding: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <nav class="container">
+        <a href="#home" class="logo">Review<span>ly</span></a>
+
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#features">Features</a>
+            <a href="#code-review">Code Review</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#about">About</a>
+        </div>
+
+        <a href="#code-review" class="btn nav-cta">Get Started →</a>
+    </nav>
+</header>
+
+<main>
+
+    <section class="hero" id="home">
+        <div class="container hero-content">
+
+            <div>
+                <span class="tag">✦ SMART AI CODE REVIEW PLATFORM</span>
+
+                <h1>
+                    Ship Cleaner Code.
+                    <span class="gradient">With Every Review.</span>
+                </h1>
+
+                <p>
+                    Reviewly helps developers identify bugs, detect
+                    security risks, and improve code quality with
+                    intelligent code analysis.
+                </p>
+
+                <a href="#code-review" class="btn">
+                    Analyze Your Code →
+                </a>
+            </div>
+
+            <div class="hero-visual">
+                <div class="code-top">● ● ● &nbsp; reviewly_example.py</div>
+
+                <div class="code">
+                    <div><span class="purple">def</span> check_code(code):</div>
+                    <div>&nbsp;&nbsp;result = analyze(code)</div>
+                    <div><span class="purple">if</span> result:</div>
+                    <div>&nbsp;&nbsp;<span class="orange">return</span> "Issues found"</div>
+                    <div><span class="purple">return</span> "Code looks good"</div>
+                    <br>
+                    <div style="color:#55ddce">✓ AI analysis completed</div>
+                    <div style="color:#ffbd85">! Potential bugs detected</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="features" id="features">
+        <div class="container">
+
+            <div class="section-title">
+                <h2>Powerful Features</h2>
+                <p>Everything you need to improve code quality and
+                   identify potential problems earlier.</p>
+            </div>
+
+            <div class="feature-grid">
+
+                <div class="feature-card">
+                    <div class="feature-icon">🐞</div>
+                    <h3>Bug Detection</h3>
+                    <p>Identify common coding mistakes and potential bugs
+                       before they become bigger problems.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Security Analysis</h3>
+                    <p>Detect potentially unsafe coding patterns and
+                       security risks.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI Suggestions</h3>
+                    <p>Receive useful explanations and suggestions
+                       to improve your code.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Code Quality</h3>
+                    <p>Review coding practices and find areas
+                       that may need improvement.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="review-section" id="code-review">
+        <div class="container">
+
+            <div class="section-title">
+                <h2>Try Reviewly Code Review</h2>
+                <p>Upload your Python file and analyze it for
+                   common bugs, security risks, and code quality issues.</p>
+            </div>
+
+            <div class="review-panel">
+
+                <h3>Start Your Code Analysis</h3>
+
+                <form id="reviewForm">
+                    <label for="codeFile">Choose Python File (.py)</label>
+
+                    <input
+                        type="file"
+                        id="codeFile"
+                        name="file"
+                        accept=".py"
+                        required
+                    >
+
+                    <button type="submit" class="btn" id="analyzeButton">
+                        Analyze Code →
+                    </button>
+                </form>
+
+                <div id="reviewResults" aria-live="polite"></div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing" id="pricing">
+        <div class="container">
+
+            <div class="section-title">
+                <h2>Simple Plans</h2>
+                <p>Choose the plan that suits your development needs.</p>
+            </div>
+
+            <div class="price-grid">
+
+                <div class="price-card">
+                    <h3>Starter</h3>
+                    <div class="price">Free</div>
+                    <p>For individual developers.</p>
+                    <ul>
+                        <li>Python code analysis</li>
+                        <li>Common bug detection</li>
+                        <li>Basic code suggestions</li>
+                    </ul>
+                    <a href="#code-review" class="btn">Get Started</a>
+                </div>
+
+                <div class="price-card">
+                    <h3>Professional</h3>
+                    <div class="price">$19</div>
+                    <p>For growing development teams.</p>
+                    <ul>
+                        <li>Advanced code analysis</li>
+                        <li>Security insights</li>
+                        <li>AI-powered suggestions</li>
+                    </ul>
+                    <a href="#code-review" class="btn">Explore Reviewly</a>
+                </div>
+
+                <div class="price-card">
+                    <h3>Business</h3>
+                    <div class="price">Custom</div>
+                    <p>For larger organizations.</p>
+                    <ul>
+                        <li>Team workflows</li>
+                        <li>Advanced reporting</li>
+                        <li>Custom integrations</li>
+                    </ul>
+                    <a href="#about" class="btn">Contact Us</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <div class="container">
+            <div class="cta">
+                <h2>Build Better Code With Reviewly</h2>
+                <p>
+                    Find issues earlier. Improve code quality.
+                    Develop with confidence.
+                </p>
+                <a href="#code-review" class="btn">
+                    Start Code Review →
+                </a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer>
+    <div class="container">
+        <h3>Reviewly</h3>
+        <p>Smart Code Review and Bug Prediction System</p>
+        <p>© 2026 Reviewly. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+    const reviewForm = document.getElementById("reviewForm");
+    const fileInput = document.getElementById("codeFile");
+    const analyzeButton = document.getElementById("analyzeButton");
+    const resultsDiv = document.getElementById("reviewResults");
+
+    reviewForm.addEventListener("submit", async function(event) {
+        event.preventDefault();
+
+        const file = fileInput.files[0];
+
+        if (!file) {
+            resultsDiv.innerHTML =
+                '<p class="error">Please select a Python file.</p>';
+            return;
+        }
+
+        if (!file.name.toLowerCase().endsWith(".py")) {
+            resultsDiv.innerHTML =
+                '<p class="error">Please upload a .py file.</p>';
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        analyzeButton.disabled = true;
+        analyzeButton.textContent = "Analyzing...";
+        resultsDiv.textContent = "Please wait. Analyzing your code...";
+
+        try {
+            const response = await fetch("/analyze", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Analysis failed.");
+            }
+
+            const findings = Array.isArray(data)
+                ? data
+                : (data.results || data.findings || []);
+
+            displayResults(findings);
+
+        } catch (error) {
+            resultsDiv.innerHTML =
+                '<p class="error">Error: ' +
+                escapeHTML(error.message) +
+                '</p><p>Please check that your Flask backend is running and its /analyze route returns JSON.</p>';
+        } finally {
+            analyzeButton.disabled = false;
+            analyzeButton.textContent = "Analyze Code →";
+        }
+    });
+
+    function displayResults(findings) {
+        resultsDiv.innerHTML = "";
+
+        if (!Array.isArray(findings) || findings.length === 0) {
+            resultsDiv.innerHTML =
+                '<p class="status">✓ Analysis completed. No issues detected!</p>';
+            return;
+        }
+
+        const heading = document.createElement("h3");
+        heading.className = "status";
+        heading.textContent = findings.length + " issue(s) detected";
+        resultsDiv.appendChild(heading);
+
+        findings.forEach(function(item) {
+            const card = document.createElement("div");
+            card.className = "result-card";
+
+            const title = document.createElement("h3");
+            title.textContent = item.type || "Code Finding";
+
+            const severity = document.createElement("p");
+            severity.textContent = "Severity: " + (item.severity || "Not specified");
+
+            const line = document.createElement("p");
+            line.textContent = "Line: " + (item.line || "Not specified");
+
+            const message = document.createElement("p");
+            message.textContent = "Issue: " + (item.message || "No details available");
+
+            const suggestion = document.createElement("p");
+            suggestion.textContent = "Suggestion: " + (item.suggestion || "Review this code.");
+
+            card.append(title, severity, line, message, suggestion);
+            resultsDiv.appendChild(card);
+        });
+    }
+
+    function escapeHTML(value) {
+        return String(value).replace(/[&<>"']/g, function(character) {
+            return {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+            }[character];
+        });
+    }
+</script>
+<script src="{{ url_for('static', filename='script.js') }}?v=2"></script>
+</body>
+</html>
